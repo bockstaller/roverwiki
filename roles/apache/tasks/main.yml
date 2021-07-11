@@ -1,0 +1,26 @@
+---
+- name: Set Apache Virtualhost
+  template:
+    src: templates/apache_config.j2
+    dest: /etc/apache2/sites-available/bluespice.conf
+
+- name: Disable default site
+  shell: /usr/sbin/a2dissite 000-default
+  notify: Reload Apache
+
+- name: Enable bluespice
+  shell: /usr/sbin/a2ensite bluespice
+  notify: Reload Apache
+
+- name: Activate module rewrite
+  shell: /usr/sbin/a2enmod rewrite
+  notify: Reload Apache
+
+- name: Create bluespice directory
+  ansible.builtin.file:
+    path: /var/www/bluespice/w
+    owner: www-data
+    group: www-data
+    mode: "0744"
+    state: "directory"
+  notify: Restart Apache

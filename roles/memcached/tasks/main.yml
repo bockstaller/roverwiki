@@ -1,0 +1,24 @@
+---
+- name: Install memcached
+  apt: name={{ item }} update_cache=yes state=latest
+  loop: ["memcached"]
+
+- name: Set memcached.conf
+  template:
+    src: templates/memcached.conf.j2
+    dest: /etc/memcached.conf
+  vars:
+    memcached_memory: 512
+  register: memcached_conf
+
+- name: restart memcached if config changed
+  service:
+    name: memcached
+    state: restarted
+  when: memcached_conf.changed
+
+- name: Make sure memcached is running
+  ansible.builtin.systemd:
+    state: started
+    enabled: yes
+    name: memcached

@@ -1,0 +1,11 @@
+- hosts: wiki
+  roles:
+    - common
+    - system_update
+    - python
+    - php
+    - apache
+    - mariadb
+    - elasticsearch
+    - memcached
+    - bluespice_code

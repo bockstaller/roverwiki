@@ -1,0 +1,6 @@
+---
+servername: "rover.de"
+serveralias: "roverwiki.rover.de"
+mysql_root_password: "{{vault_mysql_root_password}}"
+db_user: "{{vault_db_user}}"
+db_password: "{{vault_db_password}}"

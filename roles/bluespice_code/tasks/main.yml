@@ -1,0 +1,16 @@
+---
+- name: Add required dependencies.
+  apt:
+    name:
+      - unzip
+    state: present
+
+- name: Extract BlueSpice Code
+  ansible.builtin.unarchive:
+    src: ../files/BlueSpice-pro-3.2.3-1.zip
+    dest: /
+  register: bluespice_code
+
+- name: Move code to /w
+  command: mv /bluespice/* /var/www/bluespice/w/
+  when: bluespice_code

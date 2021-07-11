@@ -1,0 +1,7 @@
+---
+- name: Install Python
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
+    state: latest
+  loop: ["python3", "python3-pip"]
