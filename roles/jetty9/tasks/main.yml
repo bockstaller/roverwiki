@@ -1,0 +1,19 @@
+---
+- name: Install Jetty9 Packages
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
+    state: latest
+  loop: ["jetty9"]
+
+- name: Configure Jetty9
+  template:
+    src: templates/jetty9.j2
+    dest: /etc/default/jetty9
+  notify: Restart jetty9
+
+- name: Make sure jetty9 is running
+  ansible.builtin.systemd:
+    state: started
+    enabled: yes
+    name: jetty9

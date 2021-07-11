@@ -22,6 +22,8 @@
       "php7.3-tidy",
       "php7.3-xml",
       "php7.3-zip",
+      "php7.3-apcu",
+      "git",
     ]
 
 - name: Set php.ini

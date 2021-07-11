@@ -5,12 +5,38 @@
       - unzip
     state: present
 
-- name: Extract BlueSpice Code
-  ansible.builtin.unarchive:
-    src: ../files/BlueSpice-pro-3.2.3-1.zip
-    dest: /
-  register: bluespice_code
+#- name: Extract BlueSpice Code
+#  ansible.builtin.unarchive:
+#    src: ../files/BlueSpice-pro-3.2.3-1.zip
+#    dest: ~/
+#  register: bluespice_code
+
+- name: Delete content & directory
+  file:
+    state: absent
+    path: /var/www/bluespice/w/
+
+- name: Create diretory
+  file:
+    state: directory
+    path: /var/www/bluespice/w/
 
 - name: Move code to /w
-  command: mv /bluespice/* /var/www/bluespice/w/
-  when: bluespice_code
+  ansible.builtin.copy:
+    remote_src: yes
+    src: ~/bluespice/
+    dest: /var/www/bluespice/w/
+
+- name: Recursively change ownership of code
+  ansible.builtin.file:
+    path: /var/www/bluespice/
+    state: directory
+    recurse: yes
+    owner: www-data
+    group: www-data
+
+- name: Ensure directories are 0755
+  command: find /var/www/bluespice/ -type d -exec chmod 0755 {} \;
+
+- name: Ensure files are 0644
+  command: find /var/www/bluespice/ -type f -exec chmod 0644 {} \;

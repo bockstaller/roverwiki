@@ -9,3 +9,12 @@
     - elasticsearch
     - memcached
     - bluespice_code
+    - jetty9
+    - pdfexport
+    - visualdiff
+    - latexrenderer
+    - texvc
+    - parsoid
+    - phantomjs
+    - cronjobs
+    - configure_bluespice

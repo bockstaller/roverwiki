@@ -1,0 +1,34 @@
+---
+- name: Install texvc dependencies
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
+    state: latest
+  loop:
+    [
+      "dvipng",
+      "g++",
+      "gcc",
+      "make",
+      "ocaml-nox",
+      "texlive-latex-base",
+      "texlive-latex-extra",
+    ]
+
+- name: Compile Texvc
+  command:
+    cmd: make -C /var/www/bluespice/w/extensions/Math/math/
+
+- name: Move texvc
+  copy:
+    remote_src: yes
+    src: /var/www/bluespice/w/extensions/Math/math/texvc
+    dest: /usr/local/bin/
+
+- name: Make texvc executable
+  file:
+    path: /usr/local/bin/texvc
+    state: file
+    owner: www-data
+    group: www-data
+    mode: 1755

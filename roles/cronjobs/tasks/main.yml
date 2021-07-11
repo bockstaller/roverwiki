@@ -1,0 +1,13 @@
+---
+- name: Schedule run jobs
+  ansible.builtin.cron:
+    name: "run jobs"
+    minute: "*/10"
+    job: "php /var/www/bluespice/w/maintenance/runJobs.php"
+
+- name: Schedule report mail
+  ansible.builtin.cron:
+    name: "run jobs"
+    hour: 13
+    minute: 0
+    job: "php /var/www/bluespice/w/maintenance/runJobs.php"

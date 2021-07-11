@@ -1,0 +1,10 @@
+---
+- name: Reload jetty9
+  service:
+    name: jetty9
+    state: reloaded
+
+- name: Restart jetty9
+  service:
+    name: jetty9
+    state: restarted

@@ -1,0 +1,45 @@
+---
+- name: Install Nodejs
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
+    state: latest
+  loop: ["nodejs", "npm"]
+
+- name: Git checkout
+  ansible.builtin.git:
+    repo: "https://gerrit.wikimedia.org/r/p/mediawiki/services/parsoid"
+    dest: /opt/parsoid
+    version: v0.10.0
+    force: yes
+    depth: 1
+    single_branch: true
+
+- name: Install parsoid
+  community.general.npm:
+    production: yes
+    path: /opt/parsoid
+
+- name: Move config
+  copy:
+    remote_src: yes
+    src: /var/www/bluespice/w/extensions/BlueSpiceVisualEditorConnector/docs/parsoid/
+    dest: /opt/parsoid
+
+- name: Install pm2
+  community.general.npm:
+    production: yes
+    global: yes
+    name: pm2
+
+- name: Start Parsoid via pm2
+  command:
+    cmd: pm2 start /opt/parsoid/bin/server.js
+
+- name: Save process list
+  command:
+    cmd: pm2 save
+
+- name: Add to startup
+  command:
+    cmd: pm2 startup ubuntu

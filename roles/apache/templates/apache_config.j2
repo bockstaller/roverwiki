@@ -1,6 +1,6 @@
 <VirtualHost *:80>
 
-
+	ServerAlias 168.119.127.14
 
 	DocumentRoot /var/www/bluespice
 
@@ -21,6 +21,13 @@
 		Require all denied
 	</Directory>
 
+	<Directory /var/www/bluespice/images>
+		AllowOverride None
+		AddType text/plain .html .htm .shtml .phtml .php .php3 .php4 .php5 .php7
+		php_admin_flag engine off
+		Require all denied
+	</Directory>
+
 	<Directory /var/www/bluespice/w/cache>
 		Require all denied
 	</Directory>
@@ -30,7 +37,7 @@
 	</DirectoryMatch>
 
 	ErrorLog ${APACHE_LOG_DIR}/error-bluespice.log
-	LogLevel warn
+	LogLevel error
 	CustomLog ${APACHE_LOG_DIR}/access-bluespice.log combined
 	ServerSignature On
 
