@@ -1,6 +1,19 @@
 ---
+sitename: "Rover-Wiki"
+wikiEmergencyContact: "wiki@rover.de"
+wikiPasswordSender: "{{wikiEmergencyContact}}"
+
+
 servername: "rover.de"
 serveralias: "roverwiki.rover.de"
+
+
+
+
+
 mysql_root_password: "{{vault_mysql_root_password}}"
+
+db_host: 127.0.0.1
+db_name: bluespice
 db_user: "{{vault_db_user}}"
 db_password: "{{vault_db_password}}"

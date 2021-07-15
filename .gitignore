@@ -1,3 +1,6 @@
 *.retry
 BlueSpice-pro*
 vault_password
+
+roles/migrate_source/backup/wiki/
+roles/migrate_source/backup/backup.sql

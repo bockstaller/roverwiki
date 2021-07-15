@@ -27,6 +27,13 @@
     src: ~/bluespice/
     dest: /var/www/bluespice/w/
 
+- name: Create smw directory
+  ansible.builtin.file:
+    path: /var/www/bluespice/w/extensions/BlueSpiceFoundation/data/
+    owner: www-data
+    group: www-data
+    state: "directory"
+
 - name: Recursively change ownership of code
   ansible.builtin.file:
     path: /var/www/bluespice/
