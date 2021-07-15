@@ -1,0 +1,28 @@
+---
+- name: make temp migration directory
+  file:
+    path: ~/temp_wiki_migration/
+    state: directory
+
+- name: copy image data from local to remote
+  ansible.posix.synchronize:
+    src: ../migrate_source/backup/wiki/images/
+    dest: /var/www/bluespice/w/images
+    mode: push
+
+- name: copy database dump from local to remote
+  ansible.posix.synchronize:
+    src: ../migrate_source/backup/backup.sql
+    dest: ~/temp_wiki_migration/
+    mode: push
+
+- name: reload database from dump
+  shell: mysql -h 127.0.0.1 -u root -p{{mysql_root_password}} {{db_name}} < ~/temp_wiki_migration/backup.sql
+
+- name: Update bluespice
+  command:
+    cmd: php /var/www/bluespice/w/maintenance/update.php
+
+- name: Update permissions
+  command:
+    cmd: setWikiPerm /var/www/bluespice/

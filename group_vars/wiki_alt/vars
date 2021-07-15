@@ -1,0 +1,7 @@
+---
+
+
+
+old_db_name: "{{vault_old_db_name}}"
+old_db_user: "{{vault_old_db_user}}"
+old_db_password: "{{vault_old_db_password}}"

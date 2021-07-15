@@ -11,3 +11,6 @@
 
 [wiki]
 wiki_host     ansible_host=168.119.127.14
+
+[wiki_alt]
+wiki_alt_host ansible_host=rover.server

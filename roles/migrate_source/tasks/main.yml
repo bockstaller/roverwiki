@@ -1,0 +1,20 @@
+---
+- name: make temp migration directory
+  file:
+    path: ~/temp_wiki_migration/wiki/
+    state: directory
+
+- name: dump database
+  shell: mysqldump -h 127.0.0.1 --add-drop-table -u {{old_db_user}} -p{{old_db_password}} {{old_db_name}} > ~/temp_wiki_migration/backup.sql
+
+- name: copy wiki data
+  copy:
+    remote_src: yes
+    src: /var/www/html/wiki/
+    dest: ~/temp_wiki_migration/wiki/
+
+- name: copy backup data to local
+  ansible.posix.synchronize:
+    src: ~/temp_wiki_migration/
+    dest: backup/
+    mode: pull
