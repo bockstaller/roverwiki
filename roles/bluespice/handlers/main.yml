@@ -1,0 +1,8 @@
+---
+- name: Update bluespice
+  command:
+    cmd: php /var/www/bluespice/w/maintenance/update.php
+
+- name: Update permissions
+  command:
+    cmd: setWikiPerm /var/www/bluespice/w

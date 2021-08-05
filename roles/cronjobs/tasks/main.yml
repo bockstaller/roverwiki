@@ -7,7 +7,7 @@
 
 - name: Schedule report mail
   ansible.builtin.cron:
-    name: "run jobs"
+    name: "send mail"
     hour: 13
     minute: 0
-    job: "php /var/www/bluespice/w/maintenance/runJobs.php"
+    job: "php /var/www/bluespice/w/maintenance/processBsEmailBatch.php"

@@ -1,0 +1,103 @@
+---
+- name: Add required dependencies.
+  apt:
+    name:
+      - unzip
+    state: present
+
+- name: copy code from local to remote
+  ansible.posix.synchronize:
+    src: files/BlueSpice-pro-3.2.4.zip
+    dest: ~/
+    mode: push
+
+- name: Extract BlueSpice Code
+  ansible.builtin.unarchive:
+    src: ~/BlueSpice-pro-3.2.4.zip
+    dest: ~/bluespice/
+    remote_src: yes
+  register: deploy
+
+- name: Save images
+  ansible.builtin.copy:
+    src: /var/www/bluespice/w/images
+    dest: ~/backup_images/
+    owner: www-data
+    group: www-data
+    remote_src: yes
+    mode: "0644"
+  when: deploy.changed
+
+- name: Delete content & directory
+  file:
+    state: absent
+    path: /var/www/bluespice/w/
+  when: deploy.changed
+
+- name: Create diretory
+  file:
+    state: directory
+    path: /var/www/bluespice/w/
+  when: deploy.changed
+
+- name: Move code to /w
+  ansible.builtin.copy:
+    remote_src: yes
+    src: ~/bluespice/
+    dest: /var/www/bluespice/w/
+  notify:
+    - Update permissions
+  when: deploy.changed
+
+- name: Restore images
+  ansible.builtin.copy:
+    dest: /var/www/bluespice/w/images
+    src: ~/backup_images/
+    owner: www-data
+    group: www-data
+    mode: "0644"
+    remote_src: yes
+  notify:
+    - Update permissions
+  when: deploy.changed
+
+- name: Delete images backup
+  file:
+    state: absent
+    path: ~/backup_images/
+  when: deploy.changed
+
+- name: Create smw directory
+  ansible.builtin.file:
+    path: /var/www/bluespice/w/extensions/BlueSpiceFoundation/data/
+    owner: www-data
+    group: www-data
+    state: "directory"
+  notify:
+    - Update permissions
+  when: deploy.changed
+
+- name: Disable install check
+  command:
+    cmd: mv /var/www/bluespice/w/installcheck.php /var/www/bluespice/w/installcheck.php.disabled
+    creates: /var/www/bluespice/w/installcheck.php.disabled
+  when: deploy.changed
+
+- name: Set permission script
+  template:
+    src: templates/setWikiPerm.j2
+    dest: /usr/local/bin/setWikiPerm
+    mode: "0755"
+  when: deploy.changed
+
+- name: Set bluespice configuration
+  template:
+    src: templates/LocalSettings.php.j2
+    dest: /var/www/bluespice/w/LocalSettings.php
+    owner: www-data
+    group: www-data
+    mode: "0644"
+  notify:
+    - Update bluespice
+    - Update permissions
+  when: deploy.changed

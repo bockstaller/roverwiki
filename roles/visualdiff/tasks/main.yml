@@ -1,7 +1,0 @@
----
-- name: Move .war
-  copy:
-    remote_src: yes
-    src: /var/www/bluespice/w/extensions/BlueSpiceVisualDiff/webservices/BShtmlDiff.war
-    dest: /var/lib/jetty9/webapps/
-  notify: Restart jetty9

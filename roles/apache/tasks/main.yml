@@ -1,26 +1,65 @@
 ---
+- name: Set global servername
+  lineinfile:
+    path: /etc/apache2/apache2.conf
+    search_string: "ServerName"
+    line: "ServerName {{servername}} "
+    state: present
+    firstmatch: yes
+  notify:
+    - Reload Apache
+    - Restart Apache
+
 - name: Set Apache Virtualhost
   template:
     src: templates/apache_config.j2
     dest: /etc/apache2/sites-available/bluespice.conf
+    mode: "0644"
+    owner: www-data
+    group: www-data
+  notify:
+    - Reload Apache
+    - Restart Apache
+
+- name: Set Apache Virtualhost
+  template:
+    src: templates/apache_ssl_config.j2
+    dest: /etc/apache2/sites-available/bluespice_ssl.conf
+    mode: "0644"
+    owner: www-data
+    group: www-data
+  notify:
+    - Reload Apache
+    - Restart Apache
 
 - name: Disable default site
   shell: /usr/sbin/a2dissite 000-default
-  notify: Reload Apache
+  args:
+    removes: /etc/apache2/sites-enabled/000-default.conf
+  notify:
+    - Reload Apache
+    - Restart Apache
 
 - name: Enable bluespice
   shell: /usr/sbin/a2ensite bluespice
-  notify: Reload Apache
+  args:
+    creates: /etc/apache2/sites-enabled/bluespice.conf
+  notify:
+    - Reload Apache
+    - Restart Apache
+
+- name: Enable bluespice
+  shell: /usr/sbin/a2ensite bluespice_ssl
+  args:
+    creates: /etc/apache2/sites-enabled/bluespice_ssl.conf
+  notify:
+    - Reload Apache
+    - Restart Apache
 
 - name: Activate module rewrite
-  shell: /usr/sbin/a2enmod rewrite
-  notify: Reload Apache
-
-- name: Create bluespice directory
-  ansible.builtin.file:
-    path: /var/www/bluespice/w
-    owner: www-data
-    group: www-data
-    mode: "0744"
-    state: "directory"
-  notify: Restart Apache
+  community.general.apache2_module:
+    state: present
+    name: rewrite
+  notify:
+    - Reload Apache
+    - Restart Apache

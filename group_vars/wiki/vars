@@ -4,11 +4,22 @@ wikiEmergencyContact: "wiki@rover.de"
 wikiPasswordSender: "{{wikiEmergencyContact}}"
 
 
-servername: "rover.de"
-serveralias: "roverwiki.rover.de"
+servername: "devwiki.rover.de"
+serveralias: "devwiki.rover.de"
 
 
-
+certbot_install_method: snap
+certbot_auto_renew_user: "{{ ansible_user | default(lookup('env', 'USER')) }}"
+certbot_auto_renew_minute: "20"
+certbot_auto_renew_hour: "5"
+certbot_create_if_missing: true
+certbot_create_method: standalone
+certbot_admin_email: lukas.bockstaller@dpsg.de
+certbot_create_standalone_stop_services:
+    - apache2
+certbot_certs:
+    - domains:
+        - "{{servername}}"
 
 
 mysql_root_password: "{{vault_mysql_root_password}}"

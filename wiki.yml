@@ -2,19 +2,17 @@
   roles:
     - common
     - system_update
+    - firewall
     - python
     - php
+    - geerlingguy.certbot
     - apache
     - mariadb
     - elasticsearch
     - memcached
-    - bluespice_code
+    - bluespice
     - jetty9
-    - pdfexport
-    - visualdiff
-    - latexrenderer
     - texvc
     - parsoid
     - phantomjs
     - cronjobs
-    - configure_bluespice

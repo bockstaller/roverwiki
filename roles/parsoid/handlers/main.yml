@@ -1,0 +1,9 @@
+---
+- name: Add pm2 to startup
+  command:
+    cmd: pm2 startup systemd
+
+- name: save pm2 config
+  command:
+    cmd: pm2 save
+    chdir: /opt/parsoid

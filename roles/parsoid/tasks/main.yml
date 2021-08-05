@@ -31,15 +31,20 @@
     production: yes
     global: yes
     name: pm2
+  notify:
+    - Add pm2 to startup
+
+- name: Write ecosystem file
+  template:
+    src: templates/pm2.ecosystem.config.js.j2
+    dest: /opt/parsoid/pm2.ecosystem.config.js
+    mode: "0644"
+    owner: www-data
+    group: www-data
 
 - name: Start Parsoid via pm2
   command:
-    cmd: pm2 start /opt/parsoid/bin/server.js
-
-- name: Save process list
-  command:
-    cmd: pm2 save
-
-- name: Add to startup
-  command:
-    cmd: pm2 startup ubuntu
+    cmd: pm2 startOrReload /opt/parsoid/pm2.ecosystem.config.js
+    chdir: /opt/parsoid
+  notify:
+    - save pm2 config

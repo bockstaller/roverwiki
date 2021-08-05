@@ -4,6 +4,7 @@
     name:
       - apt-transport-https
       - gnupg2
+      - openjdk-8-jre-headless
     state: present
 
 - name: Add Elasticsearch apt key.
@@ -13,7 +14,7 @@
 
 - name: Add Elasticsearch repository.
   apt_repository:
-    repo: "deb https://artifacts.elastic.co/packages/7.x/apt stable main"
+    repo: "deb https://artifacts.elastic.co/packages/6.x/apt stable main"
     state: present
     update_cache: true
 
@@ -21,18 +22,48 @@
   apt:
     name: "{{ item }}"
     update_cache: yes
-    state: latest
-  loop: ["elasticsearch"]
+    state: present
+  loop: ["elasticsearch=6.8.13"]
+  notify:
+    - Enable Elasticsearch
+  register: es
+
+- name: Pin Elasticsearch Version
+  command: sudo apt-mark hold elasticsearch
+  when: es.changed
 
 - name: Install ingest-attachment
   community.general.elasticsearch_plugin:
     name: ingest-attachment
     force: yes
     state: present
-  notify: Restart Elasticsearch
+    version: 6.8
+  notify:
+    - Restart Elasticsearch
+  register: es
 
-- name: Make sure elasticsearch is running
-  ansible.builtin.systemd:
-    state: started
-    enabled: yes
-    name: elasticsearch
+- name: Flush handlers
+  meta: flush_handlers
+
+- name: wait
+  wait_for:
+    timeout: 15
+  when: es.changed
+
+- name: Create Elasticsearch Backend 1
+  command: "php initBackends.php --quick"
+  args:
+    chdir: /var/www/bluespice/w/extensions/BlueSpiceExtendedSearch/maintenance/
+  when: es.changed
+
+- name: Rebuild Elasticsearch Index
+  command: "php rebuildIndex.php --quick"
+  args:
+    chdir: /var/www/bluespice/w/extensions/BlueSpiceExtendedSearch/maintenance/
+  when: es.changed
+
+- name: Run Elasticsearch Jobs
+  command: "php maintenance/runJobs.php"
+  args:
+    chdir: /var/www/bluespice/w
+  when: es.changed

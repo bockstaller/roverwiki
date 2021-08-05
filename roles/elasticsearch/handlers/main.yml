@@ -1,4 +1,10 @@
 ---
+- name: Enable Elasticsearch
+  ansible.builtin.systemd:
+    state: started
+    enabled: yes
+    name: elasticsearch
+
 - name: Reload Elasticsearch
   service:
     name: elasticsearch

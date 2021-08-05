@@ -18,6 +18,7 @@
 - name: Compile Texvc
   command:
     cmd: make -C /var/www/bluespice/w/extensions/Math/math/
+    creates: /var/www/bluespice/w/extensions/Math/math/texvc
 
 - name: Move texvc
   copy:
