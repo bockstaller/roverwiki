@@ -11,16 +11,21 @@
     dest: ~/
     mode: push
 
+- name: Create temp bluespice folder
+  file:
+    state: directory
+    path: ~/bluespice_temp
+
 - name: Extract BlueSpice Code
   ansible.builtin.unarchive:
     src: ~/BlueSpice-pro-3.2.4.zip
-    dest: ~/bluespice/
+    dest: ~/bluespice_temp/
     remote_src: yes
   register: deploy
 
 - name: Save images
   ansible.builtin.copy:
-    src: /var/www/bluespice/w/images
+    src: /var/www/bluespice/w/images/
     dest: ~/backup_images/
     owner: www-data
     group: www-data
@@ -43,7 +48,7 @@
 - name: Move code to /w
   ansible.builtin.copy:
     remote_src: yes
-    src: ~/bluespice/
+    src: ~/bluespice_temp/bluespice/
     dest: /var/www/bluespice/w/
   notify:
     - Update permissions
@@ -51,7 +56,7 @@
 
 - name: Restore images
   ansible.builtin.copy:
-    dest: /var/www/bluespice/w/images
+    dest: /var/www/bluespice/w/images/
     src: ~/backup_images/
     owner: www-data
     group: www-data

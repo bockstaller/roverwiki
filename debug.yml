@@ -1,3 +1,5 @@
 - hosts: wiki
+  vars:
+  become: yes
   roles:
-    - configure_bluespice
+    - netdata
