@@ -3,8 +3,8 @@
 
     SSLEngine on
     Include /etc/letsencrypt/options-ssl-apache.conf
-    SSLCertificateFile /etc/letsencrypt/live/devwiki.rover.de/fullchain.pem
-    SSLCertificateKeyFile /etc/letsencrypt/live/devwiki.rover.de/privkey.pem
+    SSLCertificateFile /etc/letsencrypt/live/{{servername}}/fullchain.pem
+    SSLCertificateKeyFile /etc/letsencrypt/live/{{servername}}/privkey.pem
 
 	ServerName {{servername}}
 	ServerAlias {{serveralias}}

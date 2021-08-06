@@ -3,6 +3,7 @@
     - common
     - system_update
     - firewall
+    - backup
     - netdata
     - python
     - php

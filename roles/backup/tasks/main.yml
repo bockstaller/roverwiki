@@ -1,0 +1,17 @@
+---
+- name: Create Backup Directory
+  file:
+    state: directory
+    path: "{{backup_dir}}"
+
+- name: Set backup script
+  template:
+    src: templates/backupjob.sh.j2
+    dest: ~/backupjob.sh
+    mode: "0755"
+
+- name: Schedule backup jobs
+  ansible.builtin.cron:
+    name: "run backup"
+    hour: "4"
+    job: "~/backupjob.sh"

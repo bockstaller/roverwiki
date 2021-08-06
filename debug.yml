@@ -2,4 +2,4 @@
   vars:
   become: yes
   roles:
-    - netdata
+    - bluespice

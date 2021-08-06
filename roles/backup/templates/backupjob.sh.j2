@@ -1,0 +1,13 @@
+#!/bin/bash
+
+mkdir ~/backup_temp
+
+cp -r /var/www/bluespice/w/ ~/backup_temp/
+
+mysqldump -u root -p{{vault_mysql_root_password}} --lock-tables {{db_name}} > ~/backup_temp/database.sql
+
+tar -zcf {{backup_dir}}/$(date +"%FT%H%M%S")_backup.tar.gz ~/backup_temp
+
+rm -rf ~/backup_temp
+
+rclone copy ~/backups bockstallerOnedrive:/wiki_backups/

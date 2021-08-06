@@ -25,6 +25,7 @@
     remote_src: yes
     src: /var/www/bluespice/w/extensions/BlueSpiceVisualEditorConnector/docs/parsoid/
     dest: /opt/parsoid
+  register: parsoid
 
 - name: Install pm2
   community.general.npm:
@@ -34,17 +35,25 @@
   notify:
     - Add pm2 to startup
 
-- name: Write ecosystem file
-  template:
-    src: templates/pm2.ecosystem.config.js.j2
-    dest: /opt/parsoid/pm2.ecosystem.config.js
-    mode: "0644"
-    owner: www-data
-    group: www-data
+# - name: Write config file
+#   template:
+#     src: templates/config.yaml.j2
+#     dest: /opt/parsoid/config.yaml
+#     mode: "0644"
+#     owner: www-data
+#     group: www-data
+#   register: parsoids
+
+- name: Delete Parsoid via pm2
+  command:
+    cmd: pm2 delete server
+    chdir: /opt/parsoid/
+  when: parsoid.changed
 
 - name: Start Parsoid via pm2
   command:
-    cmd: pm2 startOrReload /opt/parsoid/pm2.ecosystem.config.js
-    chdir: /opt/parsoid
+    cmd: pm2 start /opt/parsoid/bin/server.js
+    chdir: /opt/parsoid/
   notify:
     - save pm2 config
+  when: parsoid.changed

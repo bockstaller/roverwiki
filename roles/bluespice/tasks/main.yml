@@ -105,4 +105,3 @@
   notify:
     - Update bluespice
     - Update permissions
-  when: deploy.changed

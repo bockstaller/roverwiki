@@ -4,8 +4,8 @@ wikiEmergencyContact: "wiki@rover.de"
 wikiPasswordSender: "{{wikiEmergencyContact}}"
 
 
-servername: "devwiki.rover.de"
-serveralias: "devwiki.rover.de"
+servername: "wiki.rover.de"
+serveralias: "wiki.rover.de"
 
 
 certbot_install_method: snap
@@ -29,6 +29,7 @@ db_name: bluespice
 db_user: "{{vault_db_user}}"
 db_password: "{{vault_db_password}}"
 
+backup_dir: ~/backups
 
 # Variables for Netdata
 
